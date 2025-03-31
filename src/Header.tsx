@@ -18,7 +18,7 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`p-4 sticky top-0 w-full transition-all duration-300 ${isSticky ? 'bg-primary' : 'bg-blurple'}`}
+      className={`p-4 sticky top-0 w-full transition-all duration-300 ${isSticky ? 'bg-primary' : 'bg-blurple'} z-2`}
     >
       <div className="flex justify-between items-center">
         <div className="text-white font-bold">Logo</div>

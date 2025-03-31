@@ -36,6 +36,10 @@
   --sidebar-ring: oklch(0.707 0.022 261.325);
 }
 
+body {
+  background-color: var(--color-light-grey);
+}
+
 .dark {
   --background: oklch(0.13 0.028 261.692);
   --foreground: oklch(0.985 0.002 247.839);
@@ -121,6 +125,8 @@
   --color-light-green: #CBFFEF;
   --color-light-pink: #F5C9FF;
   --color-pure-white: #FFFFFF;
+  --color-dark-grey: #2f3136;
+  --color-light-grey: #36393f;
 }
 
 @layer base {
@@ -129,5 +135,23 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilites {
+  .hexagon {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+               
+  }
+
+  .hexagon-half {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 50%, 50% 50%, 0% 50%, 0% 25%);
+  }
+
+  .hexagon-half-reverse {
+    clip-path: polygon(50% 100%, 100% 75%, 100% 0%, 0% 0%, 0% 75%);
+  }
+  .inner-triangle {
+    clip-path: polygon(50% 100%, 100% 0, 0 0);
   }
 }
