@@ -15,8 +15,13 @@ const HexagonalCard: React.FC = () => {
     return (
         <li className="hex-grid__item">
             <div className="hex-grid__content bg-dark-grey flex flex-col justify-between">
-                <div className="h-[40%] relative">
-                    <div className="absolute top-0 right-0 left-0 bottom-0 z-2">
+                <div className="flex-[0_0_calc(100%/3)] relative  opacity-[71.1%]" style={{  
+                                        backgroundImage: "url(" + dioCaneDiImg + ")",
+                                        backgroundPosition: 'center',
+                                        backgroundSize: 'cover',
+                                        backgroundRepeat: 'no-repeat'
+                                        }}>
+                    <div className="absolute top-0 right-0 left-0 bottom-0 z-2 backdrop-blur-[10px]">
                         <div className="flex items-center justify-center h-full">
                             <img 
                                 className="w-[25%] object-cover rounded-full"
@@ -25,16 +30,11 @@ const HexagonalCard: React.FC = () => {
                             />
                         </div>
                     </div>
-                    <img 
-                        className="w-full h-[100%] object-cover blur-[11.7px] opacity-[71.1%]"
-                        src={dioCaneDiImg}
-                        alt="" 
-                    />
                 </div>    
-                <div className="p-9 flex justify-center items-center h-[35%] z-3 bg-dark-grey">
+                <div className="p-9 flex justify-center items-center flex-[0_0_calc(100%/3)] z-3 bg-dark-grey">
                     <p className="text-white font-bold line-clamp-2">Alveare dei focking safj</p>
                 </div>
-                <div className="w-full h-[25%] flex items-center justify-center">
+                <div className="w-full flex-[0_0_calc(100%/3)] flex items-center justify-center">
                     <a className="bg-blurple hover:bg-dark-blurple w-[100%] h-[100%] inset-0 flex justify-center items-center text-white font-bold">
                         Click Me
                     </a>

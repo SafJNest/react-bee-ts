@@ -1,6 +1,5 @@
 import Header from './Header.tsx';
 import HexagonalCard from './components/HexagonalCard.tsx';
-import { HexGrid, Layout, Hexagon, Text, Pattern, Path, Hex } from 'react-hexgrid';
 
 
 const Home = () => {
@@ -11,7 +10,7 @@ const Home = () => {
         <h1 className='font-bold text-white text-[30px]'>Select a focking server you imbecil</h1>
       </div>
       <div className='px-50 py-10 hex-grid__list'>
-        {[...Array(10)].map((x, i) =>
+        {[...Array(20)].map((x, i) =>
           <HexagonalCard/>
         )}
       </div>
