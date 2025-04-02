@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
 :root {
   --radius: 0.625rem;
+  --spacing: 0.1rem;  
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.13 0.028 261.692);
   --card: oklch(1 0 0);
@@ -34,10 +38,6 @@
   --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
   --sidebar-border: oklch(0.928 0.006 264.531);
   --sidebar-ring: oklch(0.707 0.022 261.325);
-}
-
-body {
-  background-color: var(--color-light-grey);
 }
 
 .dark {
@@ -127,14 +127,28 @@ body {
   --color-pure-white: #FFFFFF;
   --color-dark-grey: #2f3136;
   --color-light-grey: #36393f;
+
+  --page-width: calc(var(--spacing) * 20);
+
+  --font-regular: "Inter", sans-serif;
 }
+
+@media screen and (min-width: 1025px) {
+  :root {
+    --page-width: calc(var(--spacing) * 50);
+  }
+}
+
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-light-grey text-foreground font-regular;
+  }
+  h1 {
+    @apply font-bold text-white text-[20px] lg:text-[30px]
   }
 }
 

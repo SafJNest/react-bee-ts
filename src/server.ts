@@ -38,7 +38,7 @@ app.get("/auth/discord", async (req: Request, res: Response) => {
     }
 
     res.cookie("discord_token", accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: false,
       maxAge: 3600000,
       sameSite: "lax",
@@ -60,6 +60,25 @@ app.get("/discord/me", async (req: Request, res: Response) => {
 
   try {
     const userResponse = await axios.get("https://discord.com/api/users/@me", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    res.json(userResponse.data);
+  } catch (error: any) {
+    console.error("Error fetching Discord user:", error.response?.data || error.message);
+    res.status(500).json({ error: "Failed to fetch user data" });
+  }
+});
+
+app.get("/discord/guilds", async (req: Request, res: Response) => {
+  const token = req.cookies.discord_token;
+
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://discord.com/api/users/@me/guilds", {
       headers: { Authorization: `Bearer ${token}` }
     });
 

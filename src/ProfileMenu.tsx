@@ -24,7 +24,7 @@ export default function ProfileMenu() {
                 <img
                     src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`}
                     alt="Avatar"
-                    className="w-16 h-16 rounded-full"
+                    className="w-20 h-20 rounded-full"
                 />
             </DropdownMenuTrigger>
             
