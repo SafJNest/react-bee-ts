@@ -7,8 +7,6 @@ type Guild = {
     name: string;
     icon: string;
 };
-const dioCaneDiGif = "https://cdn.discordapp.com/icons/474935164451946506/a_431a2da25fec16a065b6fe0325475ba6.gif";
-
 const HexagonalCard: React.FC<{ guild: Guild }> = ({ guild }) => {
     const isGif = guild.icon?.startsWith("a_");
 
