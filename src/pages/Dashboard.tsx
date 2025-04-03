@@ -1,21 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Header from "./Header.tsx";
-import { useUser } from "./contexts/UserContext.tsx";
-import './hexagon.scss';
-import { HexagonalCard, HexagonalCardSkeleton } from './components/HexagonalCard';
-
-type User = {
-    id: string;
-    username: string;
-    discriminator: string;
-    avatar: string;
-};
-type Guild = {
-    id: string;
-    name: string;
-    icon: string;
-};
+import Header from "@/components/Header.tsx";
+import { useUser } from "../contexts/UserContext.tsx";
+import { HexagonalCard, HexagonalCardSkeleton } from '../components/HexagonalCard.tsx';
+import { Guild } from '@/types/Guild.ts';
 
 const Dashboard: React.FC = () => {
     const { user } = useUser();

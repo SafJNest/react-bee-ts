@@ -1,13 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import axios from "axios";
+import { User } from '@/types/User';
 import Cookies from 'js-cookie';
-
-type User = {
-  id: string;
-  username: string;
-  discriminator: string;
-  avatar: string;
-};
 
 type UserContextType = {
   user: User | null;
@@ -24,8 +18,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const discordToken = Cookies.get('discord_token')
-    console.log(discordToken)
-    if (!discordToken || user) return
+    if (!discordToken || user) {
+      localStorage.removeItem('user');
+      return;
+    }
 
       const fetchUser = async () => {
           try {

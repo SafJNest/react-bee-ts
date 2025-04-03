@@ -2,16 +2,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useUser } from './contexts/UserContext.tsx';
-
-type User = {
-    id: string;
-    avatar: string;
-};
+import { useUser } from '../contexts/UserContext.tsx';
 
 export default function ProfileMenu() {
     const { user } = useUser();

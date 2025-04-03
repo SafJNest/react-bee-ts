@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ProfileMenu from './ProfileMenu.tsx';
-import { useUser } from './contexts/UserContext.tsx';
+import ProfileMenu from '@/components/ProfileMenu';
+import { useUser } from '@/contexts/UserContext.tsx';
 
 const Header: React.FC = () => {
   const [isSticky, setIsSticky] = useState<boolean>(false);

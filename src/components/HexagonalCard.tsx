@@ -1,12 +1,7 @@
-import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import axios from "axios";
+import React from "react";
+import { Guild } from '@/types/Guild.ts';
 
-type Guild = {
-    id: string;
-    name: string;
-    icon: string;
-};
+
 const HexagonalCard: React.FC<{ guild: Guild }> = ({ guild }) => {
     const isGif = guild.icon?.startsWith("a_");
 
