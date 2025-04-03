@@ -29,11 +29,17 @@ const HexagonalCard: React.FC<{ guild: Guild }> = ({ guild }) => {
                 >
                     <div className="absolute top-0 right-0 left-0 bottom-0 z-2 backdrop-blur-[10px]">
                         <div className="flex items-center justify-center h-full">
-                            <img 
-                                className="w-[25%] object-cover rounded-full"
-                                src={guildImage}
-                                alt={guild.name} 
-                            />
+                            {guild.icon ?
+                                <img 
+                                    className="w-[25%] object-cover rounded-full"
+                                    src={guildImage}
+                                    alt={guild.name} 
+                                />
+                                :
+                                <div className="w-[25%] aspect-[1/1] flex justify-center items-center text-white border-white border-2 text-2xl font-bold rounded-full">
+                                    {guild.name.split(/[ -]/).map(word => word.charAt(0)).join('')}
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>    
