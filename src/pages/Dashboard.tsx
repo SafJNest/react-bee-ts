@@ -17,6 +17,7 @@ const Dashboard: React.FC = () => {
                 const response = await axios.get<Guild[]>("http://localhost:3001/discord/guilds", {
                     withCredentials: true,
                 });
+                localStorage.setItem("guilds", JSON.stringify(response.data));
                 const sortedGuilds = response.data.sort((a, b) => a.name.localeCompare(b.name));
                 setGuilds(sortedGuilds);
             } catch (error) {

@@ -1,5 +1,6 @@
 import React from "react";
 import { Guild } from '@/types/Guild.ts';
+import { Link } from "react-router-dom";
 
 
 const HexagonalCard: React.FC<{ guild: Guild }> = ({ guild }) => {
@@ -42,9 +43,9 @@ const HexagonalCard: React.FC<{ guild: Guild }> = ({ guild }) => {
                 </div>
 
                 <div className="w-full flex-[0_0_calc(100%/3)] flex items-center justify-center">
-                    <a className="bg-[#d18f52] hover:bg-dark-blurple w-[100%] h-[100%] inset-0 flex justify-center items-center text-white font-bold">
+                    <Link to={'/dashboard/' + guild.id} className="bg-[#d18f52] hover:bg-dark-blurple w-[100%] h-[100%] inset-0 flex justify-center items-center text-white font-bold">
                         Click Me
-                    </a>
+                    </Link>
                 </div>
             </div>
         </li>
