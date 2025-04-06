@@ -130,7 +130,8 @@
   --color-light-pink: #F5C9FF;
   --color-pure-white: #FFFFFF;
   --color-dark-grey: #2f3136;
-  --color-light-grey: #36393f;
+  --color-light-grey: #333339;
+  --color-page-border: #7171717a;
 
   --page-width: calc(var(--spacing) * 20);
 
