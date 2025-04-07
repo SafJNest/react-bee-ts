@@ -5,7 +5,7 @@ import React, {
     ReactNode,
     FC,
 } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Hash } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 
@@ -39,7 +39,7 @@ const DiscordAccordionTrigger: FC<{ children: ReactNode }> = ({ children }) => {
 
     return (
         <div
-            className="flex items-center gap-2 cursor-pointer hover:bg-[#2f3136] transition-colors"
+            className="flex items-center gap-2 cursor-pointer hover:bg-[#2f3136] transition-colors pl-[var(--discord-inner-spacing)]"
             onClick={toggle}
         >
             <span className="uppercase text-[16px] text-gray-300">
@@ -57,7 +57,7 @@ const DiscordAccordionContent: FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <nav
             className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                isOpen ? "opacity-100" : "max-h-0 opacity-0"
             }`}
         >
             <ul>{children}</ul>
@@ -71,12 +71,17 @@ const DiscordContent: FC<{ name: string; link: string }> = ({ name, link }) => {
             <NavLink
                 to={link}
                 className={({ isActive }) =>
-                    `block text-sm transition-colors text-[16px] ${
-                        isActive ? "bg-[#5865f2] text-white" : "text-gray-300 hover:bg-[#40444b]"
+                    `block text-sm transition-colors text-[16px] py-4 p-[var(--discord-inner-spacing)] ${
+                        isActive ? "text-white bg-[#40444b] rounded-[6px]" : "text-gray-300 hover:bg-[#40444b] hover:rounded-[6px] hover:text-white"
                     }`
                 }
             >
-                # {name}
+                <div className="flex items-center gap-2">
+                    <Hash size={20} strokeWidth={1.5} /> 
+                    <span>
+                        {name}
+                    </span>
+                </div>
             </NavLink>
         </li>
     );

@@ -2,6 +2,7 @@ import Sidebar from "@/components/Sidebar";
 import { useParams } from "react-router-dom";
 import { Guild } from "@/types/Guild";
 import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 import { useGuild, GuildProvider  } from "@/contexts/GuildContext";
 import {
   DiscordAccordion,
@@ -38,25 +39,23 @@ const DashboardGuild = () => {
         <main className="w-full">
           <div className="w-full h-full flex bg-dark-grey border-page-border border-1 rounded-tl-xl rounded-bl-xl">
             <div className="flex-[0_0_300px] overflow-scroll max-h-screen">
-              <div className="w-full flex items-center p-10 border-page-border border-b-1 border-r-1">
+              <div className="w-full flex items-center p-[var(--discord-inner-spacing)] border-page-border border-b-1 border-r-1">
                 <h2 className="text-white font-bold text-xl">{guild?.name}</h2>
               </div>
-              <div className="w-full h-screen border-page-border border-b-1 border-r-1 pl-10 pt-5">
+              <div className="w-full h-screen border-page-border border-b-1 border-r-1 pt-5 px-5">
                 <ul>
-                  <DiscordContent name="general" link="/general" />
+                  <DiscordContent name="general" link={`/dashboard/${guildId}/general`} />
                   <DiscordAccordion>
                     <DiscordAccordionTrigger>Channels</DiscordAccordionTrigger>
                     <DiscordAccordionContent>
-                      <DiscordContent name="general" link="/general" />
-                      <DiscordContent name="announcements" link="/announcements" />
-                      <DiscordContent name="bot-commands" link="/bot" />
+                      <DiscordContent name="settings" link={`/dashboard/${guildId}/settings`}  />
                     </DiscordAccordionContent>
                   </DiscordAccordion>
                 </ul>
               </div>
             </div>
             <div className="flex-1 bg-light-grey">
-              a
+              <Outlet />
             </div>
           </div>
         </main>

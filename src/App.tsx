@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './pages/Home.tsx';
 import Dashboard from './pages/Dashboard.tsx'
 import DashboardGuildWrapper from './pages/DashboardGuild.tsx'
+import Settings from './pages/Settings.tsx';
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,16 @@ const router = createBrowserRouter([
   {
     path: "/dashboard/:guildId",
     element: <DashboardGuildWrapper/>,
+    children: [
+      {
+        path: "general",
+        element: <Settings />,
+      },
+      {
+        path: "settings",
+        element: <Settings />,
+      },
+    ],
   }
 
 

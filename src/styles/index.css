@@ -134,6 +134,7 @@
   --color-page-border: #7171717a;
 
   --page-width: calc(var(--spacing) * 20);
+  --discord-inner-spacing: 16px;
 
   --font-regular: "Inter", sans-serif;
 }
