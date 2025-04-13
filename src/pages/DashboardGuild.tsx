@@ -1,7 +1,7 @@
 import Sidebar from "@/components/Sidebar";
 import { useParams } from "react-router-dom";
 import { Guild } from "@/types/Guild";
-import { useEffect } from "react";
+import { useEffect, useRef  } from "react";
 import { Outlet } from "react-router-dom";
 import { useGuild, GuildProvider  } from "@/contexts/GuildContext";
 import {
@@ -33,22 +33,27 @@ const DashboardGuild = () => {
     <div>
       <DashboardGuildTitle />
       <div className="flex">
-        <div className="flex-[0_0_70px] overflow-scroll max-h-screen bg-dark-grey p-9">
+        <div className="flex-[0_0_70px] overflow-scroll max-h-[calc(100vh-var(--dashboard-guild-header-height))] bg-dark-grey p-9">
           <Sidebar />
         </div>
-        <main className="w-full">
+        <main className="w-full max-h-[calc(100vh-var(--dashboard-guild-header-height))]">
           <div className="w-full h-full flex bg-dark-grey border-page-border border-1 rounded-tl-xl rounded-bl-xl">
-            <div className="flex-[0_0_300px] overflow-scroll max-h-screen">
+            <div className="flex-[0_0_300px] overflow-hidden">
               <div className="w-full flex items-center p-[var(--discord-inner-spacing)] border-page-border border-b-1 border-r-1">
                 <h2 className="text-white font-bold text-xl">{guild?.name}</h2>
               </div>
-              <div className="w-full h-screen border-page-border border-b-1 border-r-1 pt-5 px-5">
+              <div className="flex-1 h-full overflow-auto border-page-border border-b-1 border-r-1 pt-5 px-5">
                 <ul>
-                  <DiscordContent name="general" link={`/dashboard/${guildId}/general`} />
+                  <DiscordContent name="overview" link={`/dashboard/${guildId}/overview`} />
+                  <DiscordContent name="leaderboard" link={`/dashboard/${guildId}/leaderboard`} />
+                  <DiscordContent name="settings" link={`/dashboard/${guildId}/settings`} />
                   <DiscordAccordion>
-                    <DiscordAccordionTrigger>Channels</DiscordAccordionTrigger>
+                    <DiscordAccordionTrigger>Alerts</DiscordAccordionTrigger>
                     <DiscordAccordionContent>
-                      <DiscordContent name="settings" link={`/dashboard/${guildId}/settings`}  />
+                      <DiscordContent name="welcome" link={`/dashboard/${guildId}/welcome`} />
+                      <DiscordContent name="leave" link={`/dashboard/${guildId}/leave`} />
+                      <DiscordContent name="level-up" link={`/dashboard/${guildId}/level-up`} />
+                      <DiscordContent name="reward" link={`/dashboard/${guildId}/level-up`} />
                     </DiscordAccordionContent>
                   </DiscordAccordion>
                 </ul>
@@ -59,24 +64,6 @@ const DashboardGuild = () => {
             </div>
           </div>
         </main>
-        {/* <main className='px-(--page-width)'>
-          <div className='pt-7 flex justify-center'>
-            <h1 className='text-white'>
-              {guild ? `Welcome to ${guild.name}` : "Loading..."}
-            </h1>
-          </div>
-          <ul className="w-64">
-          <DiscordContent name="general" link="/general" />
-          <DiscordAccordion>
-              <DiscordAccordionTrigger>Channels</DiscordAccordionTrigger>
-              <DiscordAccordionContent>
-                  <DiscordContent name="general" link="/general" />
-                  <DiscordContent name="announcements" link="/announcements" />
-                  <DiscordContent name="bot-commands" link="/bot" />
-              </DiscordAccordionContent>
-          </DiscordAccordion>
-          </ul>
-        </main> */}
       </div>
     </div>
   );
@@ -86,6 +73,15 @@ const DashboardGuildTitle = () => {
     const { guild } = useGuild();
     if (!guild) 
         return null;
+
+    const titleRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+      if (titleRef.current) {
+        const height = titleRef.current.offsetHeight;
+        document.documentElement.style.setProperty("--dashboard-guild-header-height", `${height}px`);
+      }
+    }, []);
 
     const isGif = guild.icon?.startsWith('a_');
     const guildImage = guild.icon 

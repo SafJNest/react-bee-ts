@@ -136,6 +136,8 @@
   --page-width: calc(var(--spacing) * 20);
   --discord-inner-spacing: 16px;
 
+  --dashboard-guild-header-height: 37px;
+
   --font-regular: "Inter", sans-serif;
 }
 
