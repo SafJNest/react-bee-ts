@@ -15,8 +15,8 @@ datasource db {
 }
 
 model UserSession {
-  id            Int      @id
-  user_id       Int
+  id            String   @id @default(uuid())
+  user_id       String
   username      String
   avatar        String?
   access_token  String
