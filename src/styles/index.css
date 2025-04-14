@@ -1,6 +1,7 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'); */
+@import url('https://fonts.cdnfonts.com/css/gg-sans-2');
 @import "tailwindcss";
 @import "tw-animate-css";
+
 
 
 :root {
@@ -133,12 +134,16 @@
   --color-light-grey: #333339;
   --color-page-border: #7171717a;
 
+  --color-channel-default: hsl(232.5 calc(1*4.167%) 62.353% /1);
+
   --page-width: calc(var(--spacing) * 20);
   --discord-inner-spacing: 16px;
 
   --dashboard-guild-header-height: 37px;
 
-  --font-regular: "Inter", sans-serif;
+  --font-regular: "gg sans Normal";
+  --font-medium: "gg sans Medium";
+  --font-bold: "gg sans";
 }
 
 @media screen and (min-width: 1025px) {
@@ -165,15 +170,20 @@
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
                
   }
-
   .hexagon-half {
     clip-path: polygon(50% 0%, 100% 25%, 100% 50%, 50% 50%, 0% 50%, 0% 25%);
   }
-
   .hexagon-half-reverse {
     clip-path: polygon(50% 100%, 100% 75%, 100% 0%, 0% 0%, 0% 75%);
   }
   .inner-triangle {
     clip-path: polygon(50% 100%, 100% 0, 0 0);
+  }
+
+  .input {
+    @apply rounded-xl bg-gray-800 text-white placeholder-yellow-300 
+           focus:outline-none focus:ring-1 focus:ring-yellow-500 focus:border-yellow-400 
+           hover:ring-1 hover:ring-yellow-500 hover:border-yellow-400 
+           px-4 py-2 transition duration-200;
   }
 }

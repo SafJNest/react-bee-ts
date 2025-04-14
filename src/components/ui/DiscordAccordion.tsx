@@ -42,7 +42,7 @@ const DiscordAccordionTrigger: FC<{ children: ReactNode }> = ({ children }) => {
             className="flex items-center gap-2 cursor-pointer hover:bg-[#2f3136] transition-colors pl-[var(--discord-inner-spacing)]"
             onClick={toggle}
         >
-            <span className="uppercase text-[16px] text-gray-300">
+            <span className="uppercase font-medium text-[16px] text-gray-300">
                 {children}
             </span>
             {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
@@ -71,8 +71,8 @@ const DiscordContent: FC<{ name: string; link: string }> = ({ name, link }) => {
             <NavLink
                 to={link}
                 className={({ isActive }) =>
-                    `block text-sm transition-colors text-[16px] py-4 p-[var(--discord-inner-spacing)] ${
-                        isActive ? "text-white bg-[#40444b] rounded-[6px]" : "text-gray-300 hover:bg-[#40444b] hover:rounded-[6px] hover:text-white"
+                    `block text-sm transition-colors font-medium text-[16px] py-4 p-[var(--discord-inner-spacing)] ${
+                        isActive ? "text-white bg-[#40444b] rounded-[6px]" : "text-channel-default hover:bg-[#40444b] hover:rounded-[6px] hover:text-white"
                     }`
                 }
             >
