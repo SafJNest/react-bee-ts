@@ -14,9 +14,10 @@ const Dashboard: React.FC = () => {
 
         const fetchGuilds = async () => {
             try {
-                const response = await axios.get<Guild[]>("http://localhost:3001/discord/guilds", {
+                const response = await axios.get<Guild[]>("http://localhost:3001/beebot/guilds", {
                     withCredentials: true,
                 });
+                console.log("Fetched guilds:", response.data);
                 localStorage.setItem("guilds", JSON.stringify(response.data));
                 const sortedGuilds = response.data.sort((a, b) => a.name.localeCompare(b.name));
                 setGuilds(sortedGuilds);
@@ -40,7 +41,7 @@ const Dashboard: React.FC = () => {
                             alt="Avatar"
                             className="w-16 h-16 rounded-full"
                         />
-                        <p>Benvenuto, {user.username}#{user.discriminator}!</p>
+                        <p>Benvenuto, {user.username}!</p>
                         
                         <ul className="py-10 hex-grid__list">
                             {guilds ? (

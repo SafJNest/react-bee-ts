@@ -27,6 +27,7 @@
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.486.0",
     "pnpm": "^10.8.0",
     "react": "^19.0.0",
