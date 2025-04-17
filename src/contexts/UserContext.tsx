@@ -17,26 +17,26 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   });
 
   useEffect(() => {
-    const discordToken = Cookies.get('discord_token')
-    if (!discordToken || user) {
+    if (user) {
       localStorage.removeItem('user');
       return;
     }
 
-      const fetchUser = async () => {
-          try {
-              const response = await axios.get<User>("http://localhost:3001/discord/me", {
-                  withCredentials: true,
-              });
-              localStorage.setItem('user', JSON.stringify(response.data))
-              setUser(response.data);
-          } catch (error) {
-              console.error("Errore nel fetch:", error);
-          }
-      };
+    const fetchUser = async () => {
+        try {
+            const response = await axios.get<User>("http://localhost:3001/discord/me", {
+                withCredentials: true,
+            });
+            console.log("Fetched user:", response.data);
+            localStorage.setItem('user', JSON.stringify(response.data));
+            setUser(response.data);
+        } catch (error) {
+            console.error("Errore nel fetch:", error);
+        }
+    };
 
-      fetchUser();
-  })
+    fetchUser();
+  }, [user]);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

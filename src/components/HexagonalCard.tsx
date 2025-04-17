@@ -12,15 +12,17 @@ const HexagonalCard: React.FC<{ guild: Guild }> = ({ guild }) => {
     return (
         <li className="hex-grid__item">
             <div className="hex-grid__content bg-dark-grey flex flex-col justify-between">
+              
                 <div 
                     className="flex-[0_0_calc(100%/3)] relative opacity-[71.1%]" 
                     style={{  
-                        backgroundImage: `url(${guildImageJpg})`,
+                        backgroundImage: guild.icon && `url(${guildImageJpg})`,
                         backgroundPosition: 'center',
                         backgroundSize: 'cover',
                         backgroundRepeat: 'no-repeat'
                     }}
                 >
+
                     <div className="absolute top-0 right-0 left-0 bottom-0 z-2 backdrop-blur-[10px]">
                         <div className="flex items-center justify-center h-full">
                             {guild.icon ?
