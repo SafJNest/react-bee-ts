@@ -18,7 +18,8 @@ const prisma = new PrismaClient();
 const PORT = process.env.SERVER_PORT || 3001;
 const SERVER_HOST = `${process.env.SERVER_HOST}:${PORT}`;
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET = Buffer.from(process.env.JWT_SECRET!, 'base64');
+
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '10m';
 
 type SessionWithUser = Prisma.UserSessionGetPayload<{ include: { user: true } }>;
@@ -30,9 +31,9 @@ interface JwtPayload {
 }
 
 export function generateInternalJWT(payload: JwtPayload): string {
-  return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
+    return jwt.sign(payload, JWT_SECRET, {
+        expiresIn: JWT_EXPIRES_IN,
+    });
 }
 
 async function getValidSession(sessionToken: string | undefined, res: Response): Promise<SessionWithUser | null> {
