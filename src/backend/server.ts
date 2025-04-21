@@ -7,6 +7,9 @@ import { v4 as uuidv4 } from "uuid";
 import { Prisma } from 'generated/prisma/client'
 import { PrismaClient } from 'generated/prisma/client'
 import jwt from 'jsonwebtoken';
+import cron from "node-cron";
+
+const THIRTY_DAYS = 1000 * 60 * 60 * 24 * 30;
 
 dotenv.config();
 const app = express();
@@ -18,11 +21,13 @@ const prisma = new PrismaClient();
 const PORT = process.env.SERVER_PORT || 3001;
 const SERVER_HOST = `${process.env.SERVER_HOST}:${PORT}`;
 
+const INTERNAL_API_BASE_URL = process.env.INTERNAL_API_BASE_URL || "http://localhost:8096";
+
 const JWT_SECRET = Buffer.from(process.env.JWT_SECRET!, 'base64');
 
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '10m';
 
-type SessionWithUser = Prisma.UserSessionGetPayload<{ include: { user: true } }>;
+type fullSession = Prisma.UserSessionGetPayload<{ include: { user: true, discordToken: true } }>;
 
 interface JwtPayload {
   sub: string;
@@ -30,68 +35,112 @@ interface JwtPayload {
   scopes?: string[];
 }
 
+cron.schedule("0 * * * *", async () => {
+    const deleted = await prisma.userSession.deleteMany({
+      where: {
+        expiresAt: {
+          lt: new Date(),
+        },
+      },
+    });
+  
+    console.log(`Cleaned up ${deleted.count} expired sessions`);
+});
+
 export function generateInternalJWT(payload: JwtPayload): string {
     return jwt.sign(payload, JWT_SECRET, {
         expiresIn: JWT_EXPIRES_IN,
     });
 }
 
-async function getValidSession(sessionToken: string | undefined, res: Response): Promise<SessionWithUser | null> {
+async function refreshDiscordToken(session: any): Promise<fullSession | null> {
+    try {
+        const tokenResponse = await axios.post(
+            "https://discord.com/api/oauth2/token",
+            new URLSearchParams({
+                client_id: process.env.CLIENT_ID!,
+                client_secret: process.env.CLIENT_SECRET!,
+                grant_type: "refresh_token",
+                refresh_token: session.discordToken.refreshToken,
+            }),
+            {
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            }
+        );
+
+        const { access_token, refresh_token, expires_in } = tokenResponse.data;
+
+        const newExpiresAt = new Date(Date.now() + expires_in * 1000);
+
+        await prisma.userSession.update({
+            where: { id: session.id },
+            data: {
+                discordToken: {
+                    update: {
+                        accessToken: access_token,
+                        refreshToken: refresh_token,
+                        expiresAt: newExpiresAt,
+                    },
+                },
+            },
+        })
+
+        session.discordToken = {accessToken: access_token, refreshToken: refresh_token, expiresAt: newExpiresAt};
+
+    } catch (err: any) {
+        console.error("Failed to refresh token:", err.response?.data || err.message);
+        return null;
+    }
+    return session;
+}
+
+
+async function getValidSession(sessionToken: string | undefined, res: Response): Promise<fullSession | null> {
     if (!sessionToken) {
         res.status(401).json({ error: "Missing session token" });
         return null;
     }
 
-    const session = await prisma.userSession.findUnique({
+    let session;
+    try {
+    session = await prisma.userSession.findUnique({
         where: { id: sessionToken },
-        include: { user: true },
+        include: { user: true, discordToken: true },
     });
+    } catch (e) {
+        console.error("DB error while fetching session:", e);
+        res.status(500).json({ error: "Internal server error" });
+        return null;
+    }
 
     if (!session) return null;
 
-    if (new Date() > session.expires_at) {
-        try {
-            const tokenResponse = await axios.post(
-                "https://discord.com/api/oauth2/token",
-                new URLSearchParams({
-                    client_id: process.env.CLIENT_ID!,
-                    client_secret: process.env.CLIENT_SECRET!,
-                    grant_type: "refresh_token",
-                    refresh_token: session.refresh_token,
-                }),
-                {
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                }
-            );
-    
-            const { access_token, refresh_token, expires_in } = tokenResponse.data;
-    
-            const newExpiresAt = new Date(Date.now() + expires_in * 1000);
-    
-            await prisma.userSession.update({
-                where: { id: sessionToken },
-                data: {
-                    access_token,
-                    refresh_token,
-                    expires_at: newExpiresAt,
-                },
-            });
-    
-            session.access_token = access_token;
-            session.expires_at = newExpiresAt;
-    
-        } catch (err: any) {
-            console.error("Failed to refresh token:", err.response?.data || err.message);
+    //non so se serve dato che in teoria se il cookie scade qui non ci arriva (giuro che non ci sto capendo più un cazzo)
+    if(new Date() > session.expiresAt) {
+        res.status(401).json({ error: "Session expired" });
+        return null;
+    }
+
+    if (new Date() > session.discordToken.expiresAt) {
+        const updatedSession = await refreshDiscordToken(session);
+        if (!updatedSession) {
             res.status(401).json({ error: "Session expired and refresh failed" });
             return null;
         }
+        session = updatedSession;
     }
 
     return session;
 }
 
+app.get("/session/status", async (req: Request, res: Response) => {
+    const session = await getValidSession(req.cookies.session_token, res);
+    if (!session) return;
+    res.json({ ok: true, user: session.user });
+  });
+
 app.get("/auth/discord", async (req: Request, res: Response) => {
-    const code = req.query.code as string;
+    const code = (req.query.code as string)?.trim();
     if (!code) return res.status(400).json({ error: "Missing code" });
 
     try {
@@ -108,6 +157,7 @@ app.get("/auth/discord", async (req: Request, res: Response) => {
         );
 
         const { access_token, refresh_token, expires_in } = tokenResponse.data;
+
         if (!access_token) throw new Error("Failed to obtain access token");
 
         const userResponse = await axios.get(
@@ -122,31 +172,35 @@ app.get("/auth/discord", async (req: Request, res: Response) => {
 
         const sessionToken = uuidv4();
 
-        await prisma.user.upsert({
-            where: { id: user.id },
-            update: {},
-            create: {
-                id: user.id,
-                username: user.username,
-                avatar: user.avatar,
-            },
-          });
-
-        const session = await prisma.userSession.create({
-            data: {
-                id: sessionToken,
-                user_id: user.id,
-                access_token: access_token,
-                refresh_token: refresh_token,
-                expires_at: expiresAt,
-            },
-        });
-
         res.cookie("session_token", sessionToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 3600000,
+            maxAge: THIRTY_DAYS,
             sameSite: "lax",
+        });
+
+        await prisma.userSession.create({
+            data: {
+                id: sessionToken,
+                expiresAt: new Date(Date.now() + THIRTY_DAYS), //this is our session expiration
+                user: {
+                    connectOrCreate: {
+                        where: { id: user.id },
+                        create: {
+                            id: user.id,
+                            username: user.username,
+                            avatar: user.avatarUrl, //if this is null? i dont fucking know
+                        },
+                    },
+                },
+                discordToken: {
+                    create: {
+                        accessToken: access_token,
+                        refreshToken: refresh_token,
+                        expiresAt: expiresAt, //this is discord token expiration
+                    },
+                },
+            },
         });
 
         res.redirect(`${process.env.HOST}/dashboard`);
@@ -168,7 +222,7 @@ app.get("/discord/guilds", async (req: Request, res: Response) => {
         const guildResponse = await axios.get(
             "https://discord.com/api/users/@me/guilds",
             {
-                headers: { Authorization: `Bearer ${session.access_token}` },
+                headers: { Authorization: `Bearer ${session.discordToken.accessToken}` },
             }
         );
 
@@ -219,20 +273,20 @@ app.get("/beebot/guilds", async (req: Request, res: Response) => {
         const JWTtoken = generateInternalJWT({
             sub: session.user.id,
             username: session.user.username,
-            scopes: ['settings:update'],
+            scopes: ['guilds'],
         });
 
         const discordGuildResponse = await axios.get(
             "https://discord.com/api/users/@me/guilds",
             {
-            headers: { Authorization: `Bearer ${session.access_token}` },
+            headers: { Authorization: `Bearer ${session.discordToken.accessToken}` },
             }
         );
 
         const discordGuildIds = discordGuildResponse.data.map((guild: any) => guild.id);
 
         const guildResponse = await axios.post(
-            'http://localhost:8096/api/guild/guilds',
+            `${INTERNAL_API_BASE_URL}/api/guild/guilds`,
             discordGuildIds,
             { 
                 headers: { 
@@ -260,4 +314,8 @@ app.get("/beebot/guilds", async (req: Request, res: Response) => {
 
 
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+}).on("error", (err: any) => {
+    console.error("Server failed to start:", err);
+});

@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "prisma generate && concurrently \"vite --host\" \"npx tsx ./src/server.ts\"",
+    "dev": "prisma generate && concurrently \"vite --host\" \"npx tsx ./src/backend/server.ts\"",
     "vite": "vite --host",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
     "vite:only": "vite",
-    "server": "npx tsx ./src/server.ts",
+    "server": "npx tsx ./src/backend/server.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -29,6 +29,7 @@
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.486.0",
+    "node-cron": "^3.0.3",
     "pnpm": "^10.8.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

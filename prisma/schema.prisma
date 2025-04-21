@@ -15,37 +15,43 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(uuid())
-  username String
-  avatar   String?
+  id        String     @id
+  username  String
+  avatar    String?
 
-  sessions UserSession[]
-  apiKeys  ApiKeys[]
+  sessions  UserSession[]
+  apiKeys   ApiKey[]
+}
+
+model DiscordToken {
+  accessToken  String     @id
+  refreshToken String
+  expiresAt    DateTime
+
+  sessions     UserSession[]
 }
 
 model UserSession {
-  id            String   @id @default(uuid())
-  user_id       String
-  access_token  String
-  refresh_token String
-  expires_at    DateTime
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id               String        @id @default(uuid())
+  userId           String
+  discordTokenId   String
+  expiresAt        DateTime
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discordToken     DiscordToken  @relation(fields: [discordTokenId], references: [accessToken], onDelete: Cascade)
 
-  @@index([user_id])
+  @@index([userId])
 }
 
-model ApiKeys {
-  id          String   @id @default(uuid())
-  hashed_key  String
-  sha256_hash String
-  user_id     String
-  created_at  DateTime @default(now())
-  active      Boolean  @default(true)
+model ApiKey {
+  id         String   @id @default(uuid())
+  hashedKey  String
+  sha256Hash String   @unique
+  userId     String
+  createdAt  DateTime @default(now())
+  active     Boolean  @default(true)
 
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([sha256_hash])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
