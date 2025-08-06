@@ -23,6 +23,9 @@ model User {
   apiKeys   ApiKey[]
 }
 
+
+//discord/webiste login
+
 model DiscordToken {
   accessToken  String     @id
   refreshToken String
@@ -54,4 +57,16 @@ model ApiKey {
   active     Boolean  @default(true)
 
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+//spotify login
+
+model SpotifyToken {
+  id           String     @id @default(uuid())
+  accessToken  String     @db.Text
+  refreshToken String     @db.Text
+  expiresAt    DateTime
+
+  discordId    String     @unique
 }

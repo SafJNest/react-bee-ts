@@ -13,7 +13,7 @@ const THIRTY_DAYS = 1000 * 60 * 60 * 24 * 30;
 
 dotenv.config();
 const app = express();
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: process.env.HOST, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 const prisma = new PrismaClient();
