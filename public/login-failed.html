@@ -1,18 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spotify Login Failed</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 100px; }
-    .card { display: inline-block; padding: 2rem; border: 1px solid #ccc; border-radius: 8px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Login Failed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .error {
+            color: #dc3545;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Spotify login failed</h1>
-    <p>Something went wrong. Please try again or use `/linkspotify` in Discord to restart the process.</p>
-  </div>
+    <div class="container">
+        <div class="error">✗ Spotify Connection Failed</div>
+        <p>Something went wrong while connecting your Spotify account.</p>
+        <p>Please try again or contact support if the problem persists.</p>
+    </div>
 </body>
 </html>
