@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 
 // Serve static files from public directory
-const publicPath = path.join(__dirname, '../../public');
+const publicPath = path.join(__dirname, '../public');
 console.log('Serving static files from:', publicPath);
 app.use(express.static(publicPath));
 
@@ -37,7 +37,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '10m';
 // Spotify configuration
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const SPOTIFY_CALLBACK_URL = `${SERVER_HOST}/spotify/callback`;
+const SPOTIFY_CALLBACK_URL = process.env.SPOTIFY_CALLBACK_URL || `http://127.0.0.1:3001/spotify/callback`;
 const spotifyCredentials = Buffer.from(
   `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
 ).toString('base64');
